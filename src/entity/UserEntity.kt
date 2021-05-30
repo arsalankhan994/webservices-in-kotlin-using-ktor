@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class UserEntity(
-    private val id: Int,
+    val id: Int,
     private val firstName: String,
     private val lastName: String,
     private val phoneNumber: String,

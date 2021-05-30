@@ -4,5 +4,6 @@ object RoutesConstant {
     /*
     We will define routes here
     */
-    const val USER_ROUTES = "/user"
+    const val USER_ROUTE = "/user"
+    const val ID_ROUTE = "{id}"
 }
