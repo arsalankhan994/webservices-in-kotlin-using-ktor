@@ -22,6 +22,11 @@ fun Application.userRoutes() {
 }
 
 private fun Route.userRoutes() {
+
+    /*
+    * User List for
+    * get all users and get user by id
+    */
     val usersList = mutableListOf<UserEntity>()
     for (i in 1..5) {
         usersList.add(
