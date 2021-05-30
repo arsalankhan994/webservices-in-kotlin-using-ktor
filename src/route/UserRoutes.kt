@@ -1,8 +1,11 @@
 package com.erselan.route
 
+import com.erselan.constant.ResponseMessageConstant
 import com.erselan.constant.RoutesConstant
+import com.erselan.entity.BaseEntity
 import com.erselan.entity.UserEntity
 import io.ktor.application.*
+import io.ktor.http.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import kotlin.random.Random
@@ -30,7 +33,11 @@ private fun Route.userRoutes() {
     */
     route(RoutesConstant.USER_ROUTES) {
         get {
-            call.respond(usersList)
+            call.respond(BaseEntity<List<UserEntity>>(
+                statusCode = HttpStatusCode.OK.value,
+                message = ResponseMessageConstant.RESPONSE_MESSAGE_GET_ALL_USERS,
+                data = usersList
+            ))
         }
     }
 }

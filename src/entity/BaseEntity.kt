@@ -1,7 +1,10 @@
 package com.erselan.entity
 
-data class BaseEntity(
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class BaseEntity<T>(
     private val statusCode: Int,
     private val message: String,
-    private val data: Any?
+    private val data: T?
 )
