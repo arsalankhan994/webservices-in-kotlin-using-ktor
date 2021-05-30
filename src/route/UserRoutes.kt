@@ -1,7 +1,5 @@
 package com.erselan.route
 
 /*
-* To Define all routes for user
+Kotlin file to define all user routes
 */
-class UserRoutes {
-}
