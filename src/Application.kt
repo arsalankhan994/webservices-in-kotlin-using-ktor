@@ -9,12 +9,22 @@ import io.ktor.serialization.*
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
-@Suppress("unused") // Referenced in application.conf
+/*
+As we define ApplicationKt module inside our application.conf file
+so this is the entry point of our application
+*/
 fun Application.module() {
+
+    /*
+    Using ContentNegotiation to convert all request and response into json
+    */
     install(ContentNegotiation) {
         json()
     }
 
+    /*
+    Testing our first route
+    */
     routing {
         get {
             call.respondText(
