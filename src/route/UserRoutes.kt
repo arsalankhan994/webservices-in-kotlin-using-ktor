@@ -12,10 +12,7 @@ import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.util.pipeline.*
-import org.jetbrains.exposed.sql.SchemaUtils
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
-import org.jetbrains.exposed.sql.selectAll
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 
 /*
@@ -69,6 +66,8 @@ private fun Route.userRoutes() {
         getAllUsers()
         getUserById()
         addUser()
+        updateUser()
+        deleteUser()
     }
 }
 
@@ -124,6 +123,45 @@ private fun Route.addUser() {
                 message = ResponseMessageConstant.USER_CREATED_SUCCESSFULLY,
                 data = null
             )
+        )
+    }
+}
+
+private fun Route.updateUser() {
+    put {
+        val userEntity = call.receive<UserEntity>()
+        userEntity.id?.let {
+            transaction {
+                Users.update({ Users.id eq userEntity.id.toInt()}) {
+                    it[firstName] = userEntity.firstName
+                    it[lastName] = userEntity.lastName
+                    it[phoneNumber] = userEntity.phoneNumber
+                    it[emailAddress] = userEntity.emailAddress
+                    it[password] = userEntity.password
+                }
+            }
+        }
+
+        call.respond(
+            BaseEntity<String>(
+                message = ResponseMessageConstant.USER_UPDATED_SUCCESSFULLY,
+                statusCode = HttpStatusCode.OK.value,
+                data = null)
+        )
+    }
+}
+
+private fun Route.deleteUser() {
+    delete(RoutesConstant.ID_ROUTE) {
+        val id = call.parameters[KeyConstant.KEY_ID] ?: return@delete missingIdParameter()
+        transaction {
+            Users.deleteWhere { Users.id eq id.toInt() }
+        }
+        call.respond(
+            BaseEntity<String>(
+                message = ResponseMessageConstant.USER_DELETED_SUCCESSFULLY,
+                statusCode = HttpStatusCode.OK.value,
+                data = null)
         )
     }
 }

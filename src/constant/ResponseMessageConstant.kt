@@ -8,6 +8,7 @@ object ResponseMessageConstant {
     const val RESPONSE_MESSAGE_GET_ALL_USERS = "All Users"
     const val RESPONSE_MESSAGE_GET_SINGLE_USERS = "User by Id"
     const val USER_CREATED_SUCCESSFULLY = "User Created Successfully"
+    const val USER_DELETED_SUCCESSFULLY = "User Deleted Successfully"
     const val USER_ALREADY_EXIST = "User Already Exist"
     const val USER_UPDATED_SUCCESSFULLY = "User Updated Successfully"
     const val USER_NOT_FOUND = "User not found"
