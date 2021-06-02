@@ -1,5 +1,6 @@
 package com.erselan
 
+import com.erselan.route.eventRoutes
 import com.erselan.route.userRoutes
 import io.ktor.application.*
 import io.ktor.features.*
@@ -24,5 +25,6 @@ fun Application.module() {
     Initializing userRoutes by using extension function
     */
     userRoutes()
+    eventRoutes()
 }
 
