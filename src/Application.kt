@@ -1,10 +1,8 @@
 package com.erselan
 
+import com.erselan.route.userRoutes
 import io.ktor.application.*
 import io.ktor.features.*
-import io.ktor.http.*
-import io.ktor.response.*
-import io.ktor.routing.*
 import io.ktor.serialization.*
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
@@ -23,15 +21,8 @@ fun Application.module() {
     }
 
     /*
-    Testing our first route
+    Initializing userRoutes by using extension function
     */
-    routing {
-        get {
-            call.respondText(
-                "Hello World",
-                status = HttpStatusCode.OK
-            )
-        }
-    }
+    userRoutes()
 }
 
