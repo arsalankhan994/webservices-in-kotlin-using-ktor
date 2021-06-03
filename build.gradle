@@ -36,6 +36,14 @@ dependencies {
     implementation "io.ktor:ktor-server-netty:$ktor_version"
     implementation "ch.qos.logback:logback-classic:$logback_version"
     implementation "io.ktor:ktor-server-core:$ktor_version"
+
+    // For serializaiton
     implementation "io.ktor:ktor-serialization:$ktor_version"
+
+    //For databse
+    implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
+    implementation("com.h2database:h2:1.4.199")
+
     testImplementation "io.ktor:ktor-server-tests:$ktor_version"
 }

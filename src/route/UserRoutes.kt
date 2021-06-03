@@ -5,12 +5,15 @@ import com.erselan.constant.ResponseMessageConstant
 import com.erselan.constant.RoutesConstant
 import com.erselan.entity.BaseEntity
 import com.erselan.entity.UserEntity
+import com.erselan.table.Users
 import io.ktor.application.*
 import io.ktor.http.*
+import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.util.pipeline.*
-import kotlin.random.Random
+import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.transactions.transaction
 
 /*
 Define Appilication extension function for User Routes
@@ -24,39 +27,60 @@ fun Application.userRoutes() {
 private fun Route.userRoutes() {
 
     /*
-    * User List for
-    * get all users and get user by id
+    Insert some data
     */
-    val usersList = mutableListOf<UserEntity>()
-    for (i in 1..5) {
-        usersList.add(
-            UserEntity(
-                id = i, firstName = "User $i", lastName = "Khan",
-                phoneNumber = Random.nextInt(1, 100).toString(), emailAddress = "email $i",
-                password = "12345", confirmPassword = "12345"
-            )
-        )
+    transaction {
+        SchemaUtils.create(Users)
+
+        Users.insert {
+            it[firstName] = "Arsalan"
+            it[lastName] = "Khan"
+            it[phoneNumber] = "123456789"
+            it[emailAddress] = "arsalankhan994@gmail.com"
+            it[password] = "123456"
+        }
+
+        Users.insert {
+            it[firstName] = "Arsalan 1"
+            it[lastName] = "Khan 1"
+            it[phoneNumber] = "123456789"
+            it[emailAddress] = "arsalankhan994@gmail.com"
+            it[password] = "123456"
+        }
+
+        Users.insert {
+            it[firstName] = "Arsalan 2"
+            it[lastName] = "Khan 2"
+            it[phoneNumber] = "123456789"
+            it[emailAddress] = "arsalankhan994@gmail.com"
+            it[password] = "123456"
+        }
     }
+
 
     /*
     Define route string as /user
     so all calls related to user are handled by this route function
     */
     route(RoutesConstant.USER_ROUTE) {
-        getAllUsers(usersList)
-        getUserById(usersList)
+        getAllUsers()
+        getUserById()
+        addUser()
+        updateUser()
+        deleteUser()
     }
 }
 
-private fun Route.getUserById(usersList: MutableList<UserEntity>) {
+private fun Route.getUserById() {
     get(RoutesConstant.ID_ROUTE) {
         val id = call.parameters[KeyConstant.KEY_ID] ?: return@get missingIdParameter()
         try {
-            val userEntity = usersList.find { it.id == id.toInt() } ?: return@get userNotFoundResponse()
+            val users = transaction { Users.selectAll().map { Users.toUser(it) } }
+            val userEntity = users.find { it.id == id.toInt() } ?: return@get userNotFoundResponse()
             call.respond(
                 BaseEntity(
                     statusCode = HttpStatusCode.OK.value,
-                    message = ResponseMessageConstant.RESPONSE_MESSAGE_GET_ALL_USERS,
+                    message = ResponseMessageConstant.RESPONSE_MESSAGE_GET_SINGLE_USERS,
                     data = userEntity
                 )
             )
@@ -66,14 +90,78 @@ private fun Route.getUserById(usersList: MutableList<UserEntity>) {
     }
 }
 
-private fun Route.getAllUsers(usersList: MutableList<UserEntity>) {
+private fun Route.getAllUsers() {
     get {
+        val users = transaction {
+            Users.selectAll().map { Users.toUser(it) }
+        }
         call.respond(
-            BaseEntity<List<UserEntity>>(
+            BaseEntity(
                 statusCode = HttpStatusCode.OK.value,
                 message = ResponseMessageConstant.RESPONSE_MESSAGE_GET_ALL_USERS,
-                data = usersList
+                data = users
             )
+        )
+    }
+}
+
+private fun Route.addUser() {
+    post {
+        val userEntity = call.receive<UserEntity>()
+        transaction {
+            Users.insert {
+                it[firstName] = userEntity.firstName
+                it[lastName] = userEntity.lastName
+                it[phoneNumber] = userEntity.phoneNumber
+                it[emailAddress] = userEntity.emailAddress
+                it[password] = userEntity.password
+            }
+        }
+        call.respond(
+            BaseEntity<String>(
+                statusCode = HttpStatusCode.OK.value,
+                message = ResponseMessageConstant.USER_CREATED_SUCCESSFULLY,
+                data = null
+            )
+        )
+    }
+}
+
+private fun Route.updateUser() {
+    put {
+        val userEntity = call.receive<UserEntity>()
+        userEntity.id?.let {
+            transaction {
+                Users.update({ Users.id eq userEntity.id.toInt()}) {
+                    it[firstName] = userEntity.firstName
+                    it[lastName] = userEntity.lastName
+                    it[phoneNumber] = userEntity.phoneNumber
+                    it[emailAddress] = userEntity.emailAddress
+                    it[password] = userEntity.password
+                }
+            }
+        }
+
+        call.respond(
+            BaseEntity<String>(
+                message = ResponseMessageConstant.USER_UPDATED_SUCCESSFULLY,
+                statusCode = HttpStatusCode.OK.value,
+                data = null)
+        )
+    }
+}
+
+private fun Route.deleteUser() {
+    delete(RoutesConstant.ID_ROUTE) {
+        val id = call.parameters[KeyConstant.KEY_ID] ?: return@delete missingIdParameter()
+        transaction {
+            Users.deleteWhere { Users.id eq id.toInt() }
+        }
+        call.respond(
+            BaseEntity<String>(
+                message = ResponseMessageConstant.USER_DELETED_SUCCESSFULLY,
+                statusCode = HttpStatusCode.OK.value,
+                data = null)
         )
     }
 }

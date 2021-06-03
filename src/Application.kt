@@ -4,6 +4,7 @@ import com.erselan.route.userRoutes
 import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.serialization.*
+import org.jetbrains.exposed.sql.Database
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
@@ -19,6 +20,11 @@ fun Application.module() {
     install(ContentNegotiation) {
         json()
     }
+
+    /*
+    Initializing Database
+    */
+    Database.connect("jdbc:h2:mem:regular;DB_CLOSE_DELAY=-1;", "org.h2.Driver")
 
     /*
     Initializing userRoutes by using extension function
