@@ -32,7 +32,7 @@ data class BaseEntity<T>(
 )
 ```
 
-# Database base connection using JetBrains Exposed
+# Database connection using JetBrains Exposed
 
 ```
 Database.connect("jdbc:h2:mem:regular;DB_CLOSE_DELAY=-1;", "org.h2.Driver")
