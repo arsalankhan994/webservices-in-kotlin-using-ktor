@@ -1,11 +1,12 @@
 # Webservices in Kotlin using Ktor
 
 1. Separate Route class for Users
-2. Handle Get, Post, Put and Delete requests from Clients
-3. Using ContentNegotiation to convert classes and data into Json
-4. Using BaseEntity for Generic Response
-5. Using Extension Functions of Application Class, Route Class, Routing Class
-6. Enable Auto-reload 
+2. Handling Get, Post, Put and Delete requests from Clients
+3. Implementing insert, update, delete, retrieve queries using H2 database
+4. Using ContentNegotiation to convert classes and data into Json
+5. Using BaseEntity for Generic Response
+6. Using Extension Functions of Application Class, Route Class, Routing Class
+7. Enable Auto-reload 
 
 
 # For Enabling AutoReload
